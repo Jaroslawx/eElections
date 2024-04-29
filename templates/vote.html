@@ -1,26 +1,16 @@
 <!-- vote.html -->
 
-{% extends 'base.html' %}
-
-{% block title %}Election{% endblock %}
-
-{% block content %}
-<div class="container">
-    <h1>Voting</h1>
-    <p>Choose candidate:</p>
-    <form method="post">
-        {% csrf_token %}
-        <ul>
-            {% for candidate in candidates %}
-                <li>
-                    <label>
-                        <input type="radio" name="candidate" value="{{ candidate.id_candidate }}">
-                        {{ candidate.name }} {{ candidate.surname }} ({{ candidate.party_beliefs }})
-                    </label>
-                </li>
-            {% endfor %}
-        </ul>
-        <button type="submit">Vote for</button>
-    </form>
-</div>
-{% endblock %}
+<form method="post">
+    {% csrf_token %}
+    <ul>
+        {% for candidate in candidates %}
+            <li>
+                <label>
+                    <input type="radio" name="candidate" value="{{ candidate.id_candidate }}">
+                    {{ candidate.name }} {{ candidate.surname }} ({{ candidate.party_beliefs }})
+                </label>
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="submit">Vote for</button>  <!-- Vote button -->
+</form>
