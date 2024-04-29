@@ -1,12 +1,21 @@
+<!-- base.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}eElections{% endblock %}</title>
+    <title>{% block title %}Strona Główna{% endblock %}</title>
+    <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
+    <!-- Here you can place common elements for all pages, such as the navigation bar -->
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Here you can place common footer elements such as the page footer -->
 </body>
 </html>

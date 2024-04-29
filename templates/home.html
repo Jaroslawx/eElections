@@ -1,0 +1,11 @@
+<!-- home.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome on Main Page!</h1>
+    <p>You can find information about our elections here.</p>
+    <a href="{% url 'all_elections' %}">Check all elections</a>
+</div>
+{% endblock %}
