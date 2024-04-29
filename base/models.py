@@ -31,6 +31,8 @@ class Candidate(models.Model):
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     party_beliefs = models.CharField(max_length=100)
+    # TODO: change name for sth more relevant (if i start for student mayor of the year it is no party_beliefs)
+
     id_election = models.ForeignKey(Election, on_delete=models.CASCADE)
     votes = models.IntegerField()
 
@@ -52,3 +54,6 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report for {self.id_election.type}"
+
+
+# TODO: add sth like status for user, so we can check if user can vote here or not (like student, worker, etc)

@@ -7,9 +7,24 @@
 {% block content %}
 <div class="container">
     <h1>All Elections List</h1>
+
+    <h2>Started Elections</h2>
     <ul>
-        {% for election in all_elections %}
-            <li><a href="{% url 'vote' election.id_election %}">{{ election.type }}</a> - {{ election.start_date|date:"Y-m-d" }} do {{ election.end_date|date:"Y-m-d" }}</li>
+        {% for election in started_elections %}
+            <li>
+                <a href="{% url 'vote' election.id_election %}">{{ election.type }}</a> - {{ election.start_date|date:"Y-m-d" }} do {{ election.end_date|date:"Y-m-d" }}
+            </li>
+        {% empty %}
+            <li>No started elections available.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Not Started Yet</h2>
+    <ul>
+        {% for election in no_started_elections %}
+            <li>
+                {{ election.type }} - {{ election.start_date|date:"Y-m-d" }} do {{ election.end_date|date:"Y-m-d" }}
+            </li>
         {% empty %}
             <li>No elections available.</li>
         {% endfor %}
