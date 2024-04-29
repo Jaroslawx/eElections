@@ -5,12 +5,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Strona Główna{% endblock %}</title>
+    <title>{% block title %}Main page{% endblock %}</title>
     <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
+
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+    </style>
+
 </head>
 <body>
     <!-- Here you can place common elements for all pages, such as the navigation bar -->
-
+    
+    <div class="header">
+        <h1>eELECTIONS</h1>
+        <div>
+            <a href="#">SIGN IN</a>
+            <a href="#">SIGN UP</a>
+        </div>
+    </div>
+    
     <div class="content">
         {% block content %}
         {% endblock %}

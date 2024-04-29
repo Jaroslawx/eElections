@@ -1,0 +1,18 @@
+<!-- all_elections.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}List of all elections{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>All Elections List</h1>
+    <ul>
+        {% for election in all_elections %}
+            <li>{{ election.type }} - {{ election.start_date|date:"Y-m-d" }} do {{ election.end_date|date:"Y-m-d" }}</li>
+        {% empty %}
+            <li>No elections available.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
