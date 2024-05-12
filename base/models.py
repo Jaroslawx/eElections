@@ -8,6 +8,8 @@ class Election(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
+    # TODO: pole żeby wskazać kto może wziąć udział w wyborach
+    # po zmianie modelu make migration i migrate później
     class Meta:
         verbose_name_plural = "Election"
 

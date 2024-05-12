@@ -1,7 +1,38 @@
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.utils import timezone
+
 from .models import Election, Candidate, Vote, Report
+
+
+def signup(request):
+    if request.method == "POST":
+        # Pobieranie danych z formularza rejestracji
+        username = request.POST['username']
+        password = request.POST['password']
+        # Tworzenie nowego użytkownika
+        User.objects.create_user(username=username, password=password)
+        # Logowanie nowego użytkownika
+        user = authenticate(username=username, password=password)
+        auth_login(request, user)
+        return redirect('home')
+    else:
+        return render(request, "accounts/signup.html")
+
+
+# TODO: zamienic na klase?
+def login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            # Logowanie użytkownika
+            auth_login(request, form.get_user())
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, "accounts/login.html", {'form': form})
 
 
 def home(request):
@@ -15,6 +46,7 @@ def all_elections(request):
     no_started_elections = Election.objects.filter(start_date__gt=today)
     return render(request, "all_elections.html",
                   {"started_elections": started_elections, "no_started_elections": no_started_elections})
+
 
 def vote(request, election_id):
     if request.method == "POST":
