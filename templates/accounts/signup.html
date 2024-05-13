@@ -1,6 +1,25 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="flex-none">
+        {% if form.errors %}
+                <p class="font-bold">Error, with creating account!</p>
+            {% endif %}
+
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <p class="font-bold">Your account, doesn't have access to this page!</p>
+                {% else %}
+                    <p class="font-bold">Login to see this page!</p>
+                {% endif %}
+            {% endif %}
+    </div>
+</div>    
+    
 <div class="container">
     <h1>Sign Up</h1>
     <form method="post">

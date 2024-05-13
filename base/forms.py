@@ -8,7 +8,8 @@ class SignUpForm(UserCreationForm):
     name = forms.CharField(max_length=30, help_text='Required. Inform your name.')
     last_name = forms.CharField(max_length=30, help_text='Required. Inform your last name')
     birth_date = forms.DateField(help_text='Required. Format: YYYY-MM-DD')
-    status = forms.CharField(max_length=30, help_text='Required. Inform your status')
+    status = forms.ChoiceField(choices=[('student', 'Student'), ('teacher', 'Teacher'), ('staff', 'Staff')],
+                               help_text='Required. Choose your status')
     password1 = forms.CharField(max_length=30, help_text='Required. Inform your password.')
     password2 = forms.CharField(max_length=30, help_text='Required. Inform your password again.')
 

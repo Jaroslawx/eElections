@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Main page{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
 
     <style>
@@ -30,22 +30,35 @@
     </style>
 
 </head>
+
 <body>
-    <!-- Here you can place common elements for all pages, such as the navigation bar -->
-    
+<header>
     <div class="header">
         <h1><a href="{% url 'home' %}">eELECTIONS</a></h1>
         <div>
-            <a href="#">SIGN IN</a>
-            <a href="#">SIGN UP</a>
+            {% if request.user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}">ADMIN PANEL</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">LOGOUT</a>
+            {% else %}
+                <a href="{% url 'login' %}">LOGIN</a>
+                <a href="{% url 'signup' %}">SIGN UP</a>
+            {% endif %}
         </div>
     </div>
-    
+</header>
+
+<main>
     <div class="content">
         {% block content %}
         {% endblock %}
     </div>
+</main>
 
-    <!-- Here you can place common footer elements such as the page footer -->
+<footer>
+    <!-- Here code our footer -->
+</footer>
+
 </body>
 </html>
