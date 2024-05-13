@@ -1,22 +1,23 @@
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from .models import Election, Candidate, Vote, Report
-from .forms import SignUpForm
+from django.contrib.auth.views import (LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,
+                                       PasswordResetCompleteView)
+from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm
 
 
 def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()  # Zapisanie danych użytkownika
+            form.save()  # Save the new user to the database
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-            # Logowanie nowego użytkownika
+            # New user authentication
             user = authenticate(username=username, password=password)
             auth_login(request, user)
             return redirect('home')
@@ -30,7 +31,7 @@ def login(request):
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
-            # Logowanie użytkownika
+            # User authentication
             auth_login(request, form.get_user())
             return redirect('home')
     else:
@@ -71,3 +72,24 @@ def vote(request, election_id):
 
 def thank_you(request):
     return render(request, "thank_you.html")
+
+
+# class CustomLoginView(LoginView):
+#     form_class = CustomAuthenticationForm
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomSetPasswordForm
+    template_name = 'accounts/password_reset_confirm.html'
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
