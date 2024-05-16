@@ -3,45 +3,12 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.urls import reverse_lazy
 
 from .models import Election, Candidate, Vote, Report
 from django.contrib.auth.views import (LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,
                                        PasswordResetCompleteView)
 from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm
-
-
-def signup(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the new user to the database
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            # New user authentication
-            user = authenticate(username=username, password=password)
-            auth_login(request, user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, "accounts/signup.html", {'form': form})
-
-
-# TODO: zamienic na klase? kiedy klasa a kiedy def?
-def login(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            # User authentication
-            auth_login(request, form.get_user())
-            return redirect('home')
-    else:
-        form = AuthenticationForm()
-    return render(request, "accounts/login.html", {'form': form})
-
-
-def logout(request):
-    auth_logout(request)
-    return redirect('home')
 
 
 def home(request):
@@ -74,8 +41,33 @@ def thank_you(request):
     return render(request, "thank_you.html")
 
 
-# class CustomLoginView(LoginView):
-#     form_class = CustomAuthenticationForm
+def signup(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new user to the database
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            # New user authentication
+            user = authenticate(username=username, password=password)
+            auth_login(request, user)
+            return redirect('home')
+    else:
+        form = SignUpForm()
+    return render(request, "accounts/signup.html", {'form': form})
+
+
+def logout(request):
+    auth_logout(request)
+    return redirect('home')
+
+
+class CustomLoginView(LoginView):
+    template_name = 'accounts/login.html'
+    authentication_form = CustomAuthenticationForm
+
+    def get_success_url(self):
+        return reverse_lazy('home')
 
 
 class CustomPasswordResetView(PasswordResetView):

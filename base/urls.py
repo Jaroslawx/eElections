@@ -1,9 +1,10 @@
 from django.urls import include, path, re_path
 from . import views
 
-from base.views import signup, login, logout
-from base.views import CustomPasswordResetView, CustomPasswordResetDoneView, CustomPasswordResetConfirmView, \
+from base.views import signup, logout
+from base.views import CustomLoginView, CustomPasswordResetView, CustomPasswordResetDoneView, CustomPasswordResetConfirmView, \
     CustomPasswordResetCompleteView
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -12,15 +13,15 @@ urlpatterns = [
     path("vote/<int:election_id>/", views.vote, name="vote"),
     path("thank_you/", views.thank_you, name="thank_you"),
 
-    path("accounts/signup/", signup, name="signup"),
-    path("accounts/login/", login, name='login'),
-    path("accounts/logout/", logout, name='logout'),
+    path("signup/", signup, name="signup"),
+    path("logout/", logout, name='logout'),
 
-    path("accounts/password_reset/", CustomPasswordResetView.as_view(), name='password_reset'),
-    path('accounts/password_reset/done', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('accounts/reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path("password_reset/", CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(),
          name='custom_password_reset_confirm'),
-    path('accounts/reset/done', CustomPasswordResetCompleteView.as_view(), name='custom_password_reset_complete'),
+    path('reset/done', CustomPasswordResetCompleteView.as_view(), name='custom_password_reset_complete'),
     path('accounts/', include('django.contrib.auth.urls')),
 
 ]

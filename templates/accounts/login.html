@@ -8,9 +8,11 @@
     <h1>Login</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.username }}
+        {{ form.password }}
         <button type="submit">Login</button>
     </form>
     <p>Forgot password? <a href="{% url 'password_reset' %}">Reset it</a>.</p>
+    <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a>.</p>
 </div>
 {% endblock %}

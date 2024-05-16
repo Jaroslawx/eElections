@@ -40,9 +40,9 @@
                 {% if user.is_staff %}
                     <a href="{% url 'admin:index' %}">ADMIN PANEL</a>
                 {% endif %}
-                <a href="{% url 'logout' %}">LOGOUT</a>
+                <a href="/accounts/logout/">LOGOUT</a>
             {% else %}
-                <a href="{% url 'login' %}">LOGIN</a>
+                <a href="/accounts/login/">LOGIN</a>
                 <a href="{% url 'signup' %}">SIGN UP</a>
             {% endif %}
         </div>

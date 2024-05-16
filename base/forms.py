@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from django.forms import SelectDateWidget
 
@@ -33,11 +33,8 @@ class SignUpForm(UserCreationForm):
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        style = 'w-full p-2 mb-2 ml-2 border-black border-2'
         self.fields['username'].widget.attrs['placeholder'] = 'Username'
-        self.fields['username'].widget.attrs['class'] = style
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
-        self.fields['password'].widget.attrs['class'] = style
 
 
 class CustomPasswordResetForm(PasswordResetForm):
