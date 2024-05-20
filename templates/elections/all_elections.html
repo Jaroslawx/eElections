@@ -11,6 +11,9 @@
             <input type="text" name="q" class="form-control mr-sm-2" placeholder="Search by name" value="{{ query }}">
         </label>
         <button type="submit" class="btn btn-primary">Search</button>
+        {% if query %}
+            <a href="{% url 'all_elections' %}" class="btn btn-secondary ml-2">Reset</a>
+        {% endif %}
     </form>
 
     <h2>Started Elections</h2>
