@@ -26,7 +26,7 @@
                     <small>Number of candidates: {{ election.candidates.count }}</small><br>
                     <small>Ends in: {{ election.end_date|timeuntil }}</small>
                 </div>
-                {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated and request.user in election.eligible_voters.all %}
                     <a href="{% url 'vote' election.id_election %}" class="btn btn-success">Vote</a>
                 {% endif %}
             </div>
