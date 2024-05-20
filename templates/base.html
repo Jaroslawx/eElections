@@ -1,21 +1,29 @@
-<!-- base.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>{% block title %}{% endblock %}</title>
     <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
 
     <style>
+        body {
+            background-color: #62aeff; /* Blue background */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            background-color: #333;
+            background-color: #28a745; /* Green header background */
             color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1000; /* Ensures the header stays on top */
         }
 
         .header h1 {
@@ -27,8 +35,18 @@
             text-decoration: none;
             margin-left: 20px;
         }
-    </style>
 
+        .content {
+            padding: 20px;
+        }
+
+        footer {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,6 +76,7 @@
 
 <footer>
     <!-- Here code our footer -->
+    <p>&copy; 2024 eELECTIONS. All rights reserved.</p>
 </footer>
 
 </body>

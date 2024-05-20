@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django import forms
 from django.contrib.auth import authenticate
@@ -8,16 +8,38 @@ from django.forms import SelectDateWidget
 
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-    name = forms.CharField(max_length=30, help_text='Required. Inform your name.')
-    last_name = forms.CharField(max_length=30, help_text='Required. Inform your last name')
-    birth_date = forms.DateField(widget=SelectDateWidget(years=range(1930, datetime.now().year - 13)),
-                                 help_text='Required. Choose your birth date')
-    status = forms.ChoiceField(choices=[('student', 'Student'), ('teacher', 'Teacher'), ('staff', 'Staff')],
-                               help_text='Required. Choose your status')
-    password1 = forms.CharField(max_length=30, widget=forms.PasswordInput, help_text='Required. Inform your password.')
-    password2 = forms.CharField(max_length=30, widget=forms.PasswordInput,
-                                help_text='Required. Inform your password again.')
+    email = forms.EmailField(
+        max_length=254,
+        help_text='Required. Inform a valid email address.',
+        widget=forms.EmailInput(attrs={'placeholder': 'Email'})
+    )
+    name = forms.CharField(
+        max_length=30,
+        help_text='Required. Inform your name.',
+        widget=forms.TextInput(attrs={'placeholder': 'Name'})
+    )
+    last_name = forms.CharField(
+        max_length=30,
+        help_text='Required. Inform your last name.',
+        widget=forms.TextInput(attrs={'placeholder': 'Last Name'})
+    )
+    birth_date = forms.DateField(
+        widget=SelectDateWidget(
+            years=range(1930, datetime.now().year - 13),
+            attrs={'placeholder': 'Birth Date'}
+        ),
+        help_text='Required. Choose your birth date'
+    )
+    password1 = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        help_text='Required. Inform your password.'
+    )
+    password2 = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}),
+        help_text='Required. Inform your password again.'
+    )
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -25,9 +47,20 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError('Email already exists.')
         return email
 
+    def clean_birth_date(self):
+        birth_date = self.cleaned_data.get('birth_date')
+        today = date.today()
+        age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        if age < 18:
+            raise forms.ValidationError('You must be at least 18 years old to register.')
+        return birth_date
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'name', 'last_name', 'birth_date', 'status', 'password1', 'password2')
+        fields = ('username', 'email', 'name', 'last_name', 'birth_date', 'password1', 'password2')
+        widgets = {
+            'username': forms.TextInput(attrs={'placeholder': 'Username'}),
+        }
 
 
 class CustomAuthenticationForm(AuthenticationForm):
