@@ -20,10 +20,13 @@ def all_elections(request):
     now = timezone.now()
     query = request.GET.get('q', '')
 
+    # Filter elections
     started_elections = ElectionEvent.objects.filter(start_date__lte=now)
     no_started_elections = ElectionEvent.objects.filter(start_date__gt=now)
 
+    # If a search query is provided
     if query:
+        # Filter elections by type
         started_elections = started_elections.filter(
             Q(type__icontains=query)
         )
