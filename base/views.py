@@ -3,6 +3,7 @@ from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.urls import reverse_lazy
+from django.db.models import Q
 import csv
 
 from .models import ElectionEvent, Candidate, Vote, Report
@@ -23,8 +24,12 @@ def all_elections(request):
     no_started_elections = ElectionEvent.objects.filter(start_date__gt=now)
 
     if query:
-        started_elections = started_elections.filter(name__icontains=query)
-        no_started_elections = no_started_elections.filter(name__icontains=query)
+        started_elections = started_elections.filter(
+            Q(type__icontains=query)
+        )
+        no_started_elections = no_started_elections.filter(
+            Q(type__icontains=query)
+        )
 
     return render(request, "elections/all_elections.html", {
         "started_elections": started_elections,
