@@ -13,38 +13,44 @@
             background-color: #62aeff; /* Blue background */
             margin: 0;
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Make sure the page content stretches to at least the height of the viewport */
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
+        header {
             background-color: #28a745; /* Green header background */
             color: #fff;
+            padding: 10px;
             position: sticky;
             top: 0;
             z-index: 1000; /* Ensures the header stays on top */
         }
 
-        .header h1 {
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-content h1 {
             margin: 0;
         }
 
-        .header a {
+        .header-content a {
             color: #fff;
             text-decoration: none;
             margin-left: 20px;
         }
 
-        .content {
-            padding: 20px;
+        main {
+            flex: 1; /* Make the main content area take up remaining vertical space */
         }
 
         footer {
-            padding: 10px;
             background-color: #333;
             color: #fff;
+            padding: 10px;
             text-align: center;
         }
     </style>
@@ -52,8 +58,9 @@
 
 <body>
 <header>
-    <div class="header">
+    <div class="header-content">
         <h1><a href="{% url 'home' %}">eELECTIONS</a></h1>
+        <a href="/elections/all_elections/">ALL ELECTIONS</a>
         <div>
             {% if request.user.is_authenticated %}
                 {% if user.is_staff %}
