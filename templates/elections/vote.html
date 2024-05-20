@@ -1,0 +1,18 @@
+<!-- vote.html -->
+
+<div style="text-align: center;">
+    <form method="post" style="display: inline-block;">
+        {% csrf_token %}
+        <ul>
+            {% for candidate in candidates %}
+                <li>
+                    <label>
+                        <input type="radio" name="candidate" value="{{ candidate.id_candidate }}">
+                        {{ candidate.name }} {{ candidate.surname }} ({{ candidate.description }})
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Vote for</button>  <!-- Vote button -->
+    </form>
+</div>

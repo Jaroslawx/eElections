@@ -16,12 +16,21 @@ def home(request):
 
 
 def all_elections(request):
-    # TODO: change to all elections available for that user, or add filters to see specific group of elections
-    today = timezone.now().date()
-    started_elections = ElectionEvent.objects.filter(start_date__lte=today)
-    no_started_elections = ElectionEvent.objects.filter(start_date__gt=today)
-    return render(request, "all_elections.html",
-                  {"started_elections": started_elections, "no_started_elections": no_started_elections})
+    now = timezone.now()
+    query = request.GET.get('q', '')
+
+    started_elections = ElectionEvent.objects.filter(start_date__lte=now)
+    no_started_elections = ElectionEvent.objects.filter(start_date__gt=now)
+
+    if query:
+        started_elections = started_elections.filter(name__icontains=query)
+        no_started_elections = no_started_elections.filter(name__icontains=query)
+
+    return render(request, "elections/all_elections.html", {
+        "started_elections": started_elections,
+        "no_started_elections": no_started_elections,
+        "query": query
+    })
 
 
 def vote(request, election_id):
@@ -34,11 +43,11 @@ def vote(request, election_id):
     else:
         election = ElectionEvent.objects.get(pk=election_id)
         candidates = Candidate.objects.filter(id_election=election_id)
-        return render(request, "vote.html", {"election": election, "candidates": candidates})
+        return render(request, "elections/vote.html", {"election": election, "candidates": candidates})
 
 
 def thank_you(request):
-    return render(request, "thank_you.html")
+    return render(request, "elections/thank_you.html")
 
 
 def create_report(request):
@@ -57,10 +66,10 @@ def create_report(request):
         )
         report.csv_file.save('report.csv', open('reports/report.csv', 'rb'))
 
-        return render(request, 'success.html', {'message': 'Report created successfully'})
+        return render(request, 'elections/success.html', {'message': 'Report created successfully'})
     else:
         # Displaying the form for creating a report
-        return render(request, 'create_report.html')
+        return render(request, 'elections/create_report.html')
 
 
 def signup(request):

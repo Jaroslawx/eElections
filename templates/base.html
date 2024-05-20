@@ -6,7 +6,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>{% block title %}{% endblock %}</title>
     <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
-
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         body {
             background-color: #62aeff; /* Blue background */

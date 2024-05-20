@@ -1,0 +1,49 @@
+/* static/css/styles.css */
+
+.form-inline {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.form-inline .form-control {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item h5 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.list-group-item p {
+    margin: 0.5rem 0;
+}
+
+.list-group-item small {
+    color: #666;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
