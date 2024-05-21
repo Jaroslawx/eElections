@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -18,6 +19,7 @@ def home(request):
     return render(request, "home.html")
 
 
+@login_required
 def all_elections(request):
     now = timezone.now()
     query = request.GET.get('q', '')
@@ -36,10 +38,17 @@ def all_elections(request):
             Q(type__icontains=query)
         )
 
+    # Get votes for the current user
+    user_votes = Vote.objects.filter(user=request.user)
+
+    # Get IDs of elections user has voted in
+    user_voted_elections = user_votes.values_list('id_election', flat=True)
+
     return render(request, "elections/all_elections.html", {
         "started_elections": started_elections,
         "no_started_elections": no_started_elections,
-        "query": query
+        "query": query,
+        "user_voted_elections": user_voted_elections
     })
 
 
@@ -49,6 +58,12 @@ def vote(request, election_id):
         candidate = Candidate.objects.get(pk=candidate_id)
         candidate.votes += 1  # We increase the number of votes for the selected candidate
         candidate.save()  # We save the changes in the database
+
+        # Save that the user participated in this election
+        user = request.user
+        election = ElectionEvent.objects.get(pk=election_id)
+        Vote.objects.create(user=user, id_election=election)
+
         return redirect("thank_you")  # Redirected to a thank_you page
     else:
         election = ElectionEvent.objects.get(pk=election_id)
