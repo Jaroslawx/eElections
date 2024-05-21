@@ -9,4 +9,11 @@
             href="{% url 'admin:index' %}"><b>{{ site_header|default:_('Django administration') }}</b></a></h1>
 {% endblock %}
 
-{% block nav-global %}{% endblock %}
+{% block nav-global %}
+    <div class="nav-global">
+        <ul>
+{#            <li><a href="{% url 'create_reports' %}">Create Reports</a></li>#}
+            <!-- Dodaj tutaj inne odnośniki, jeśli są potrzebne -->
+        </ul>
+    </div>
+{% endblock %}

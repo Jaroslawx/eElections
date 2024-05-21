@@ -23,4 +23,7 @@ urlpatterns = [
     path('reset/done', CustomPasswordResetCompleteView.as_view(), name='custom_password_reset_complete'),
     path('accounts/', include('django.contrib.auth.urls')),
 
+    path("admin_elections/", views.admin_elections, name="admin_elections"),
+    path("admin_eligible/<int:election_id>/", views.admin_eligible, name="admin_eligible"),
+
 ]

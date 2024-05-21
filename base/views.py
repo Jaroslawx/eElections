@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -9,6 +10,7 @@ import csv
 from .models import ElectionEvent, Candidate, Vote, Report
 from django.contrib.auth.views import (LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,
                                        PasswordResetCompleteView)
+from django.contrib.auth.models import User
 from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm
 
 
@@ -58,26 +60,61 @@ def thank_you(request):
     return render(request, "elections/thank_you.html")
 
 
-def create_report(request):
+def admin_elections(request):
+    elections = ElectionEvent.objects.all()
+    election_data = []
+
+    for election in elections:
+        total_voters = election.eligible_voters.count()
+        votes_cast = Vote.objects.filter(id_election=election).count()
+        election_data.append({
+            'election': election,
+            'total_voters': total_voters,
+            'votes_cast': votes_cast
+        })
+
     if request.method == 'POST':
-        # Retrieving data for a report from a POST request
+        if 'end_election' in request.POST:
+            election_id = request.POST.get('end_election')
+            election = get_object_or_404(ElectionEvent, id=election_id)
+            election.end_date = timezone.now()
+            election.save()
+            messages.success(request, f"Election {election} has been ended early.")
 
-        # Saving data to a CSV file
-        with open('reports/report.csv', 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            # Here we save the data to a CSV file
+        elif 'generate_report' in request.POST:
+            election_id = request.POST.get('generate_report')
+            return redirect('generate_report', election_id=election_id)
 
-        # Creating a report object in the database
-        report = Report.objects.create(
-            id_election=request.POST['id_election'],
-            frequency=request.POST['frequency'],
-        )
-        report.csv_file.save('report.csv', open('reports/report.csv', 'rb'))
+    context = {
+        'election_data': election_data
+    }
+    return render(request, 'admin_elections.html', context)
 
-        return render(request, 'elections/success.html', {'message': 'Report created successfully'})
-    else:
-        # Displaying the form for creating a report
-        return render(request, 'elections/create_report.html')
+
+def admin_eligible(request, election_id):
+    election = get_object_or_404(ElectionEvent, id_election=election_id)
+    all_users = User.objects.all()
+    eligible_voters = election.eligible_voters.all()
+    votes = Vote.objects.filter(id_election=election)
+
+    # Users who are not assigned to this election
+    not_assigned_users = all_users.exclude(id__in=eligible_voters.values_list('id', flat=True))
+
+    # Users who are assigned but have not voted
+    voted_user_ids = votes.values_list('user_id', flat=True)
+    not_voted_users = eligible_voters.exclude(id__in=voted_user_ids)
+
+    # Users who have voted
+    voted_users = User.objects.filter(id__in=voted_user_ids)
+
+    context = {
+        'election': election,
+        'not_assigned_users': not_assigned_users,
+        'not_voted_users': not_voted_users,
+        'voted_users': voted_users
+    }
+
+    return render(request, 'admin_eligible.html', context)
 
 
 def signup(request):

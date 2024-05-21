@@ -61,14 +61,18 @@
     <div class="header-content">
         <h1><a href="{% url 'home' %}">eELECTIONS</a></h1>
         <a href="/elections/all_elections/">ALL ELECTIONS</a>
+{#        <a href="{% url 'all_elections' %}">ALL ELECTIONS</a>#}
         <div>
             {% if request.user.is_authenticated %}
                 {% if user.is_staff %}
                     <a href="{% url 'admin:index' %}">ADMIN PANEL</a>
+                    <a href="{% url 'admin_elections' %}">ADMIN ELECTIONS</a>
                 {% endif %}
                 <a href="/accounts/logout/">LOGOUT</a>
+{#                <a href="{% url 'logout' %}">LOGOUT</a>#}
             {% else %}
                 <a href="/accounts/login/">LOGIN</a>
+{#                <a href="{% url 'login' %}">LOGIN</a>#}
                 <a href="{% url 'signup' %}">SIGN UP</a>
             {% endif %}
         </div>

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Eligible Voters{% endblock %}
+
+{% block content %}
+<h1>Manage Eligible Voters for {{ election.type }} Election</h1>
+
+<div class="container">
+    <div class="box" id="not_assigned">
+        <h2>Not Assigned Users</h2>
+        <ul>
+            {% for user in not_assigned_users %}
+                <li data-id="{{ user.id }}">{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="box" id="not_voted">
+        <h2>Assigned but Not Voted Users</h2>
+        <ul>
+            {% for user in not_voted_users %}
+                <li data-id="{{ user.id }}">{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="box gray" id="voted">
+        <h2>Voted Users</h2>
+        <ul>
+            {% for user in voted_users %}
+                <li data-id="{{ user.id }}">{{ user.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notAssigned = document.getElementById('not_assigned');
+        const notVoted = document.getElementById('not_voted');
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const userId = e.dataTransfer.getData('text/plain');
+            const userElement = document.querySelector(`li[data-id='${userId}']`);
+            e.target.closest('ul').appendChild(userElement);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        document.querySelectorAll('li').forEach(item => {
+            item.setAttribute('draggable', true);
+            item.addEventListener('dragstart', handleDragStart);
+        });
+
+        [notAssigned, notVoted].forEach(box => {
+            box.addEventListener('drop', handleDrop);
+            box.addEventListener('dragover', handleDragOver);
+        });
+    });
+</script>
+
+<style>
+    .container {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px;
+    }
+    .box {
+        width: 30%;
+        padding: 20px;
+        border: 1px solid #000;
+    }
+    .gray {
+        background-color: #e0e0e0;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #000;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

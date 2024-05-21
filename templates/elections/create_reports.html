@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Create Reports{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Create Reports</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Available Elections</h2>
+            <ul class="list-group">
+                {% for election in elections %}
+                <li class="list-group-item">{{ election.type }} ({{ election.start_date|date:"Y-m-d" }} - {{ election.end_date|date:"Y-m-d" }})
+                    <a href="{% url 'create_report' election.id %}" class="btn btn-primary btn-sm">Create Report</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item">No elections available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
