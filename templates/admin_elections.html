@@ -25,9 +25,6 @@
                     {% csrf_token %}
                     <button type="submit" name="end_election" value="{{ data.election.id_election }}">End Election Early</button>
                 </form>
-                <form method="get" action="{% url 'admin_eligible' data.election.id_election %}" style="display: inline;">
-                    <button type="submit">Manage Voters</button>
-                </form>
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" name="generate_report" value="{{ data.election.id_election }}">Generate Report</button>

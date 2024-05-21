@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+import os
 
 
 class ElectionEvent(models.Model):
@@ -57,6 +59,10 @@ class Candidate(models.Model):
     def __str__(self):
         return f"{self.name} {self.surname} ({self.id_election.type} Election)"
 
+    def add_vote(self):
+        self.votes += 1
+        self.save()
+
 
 class Report(models.Model):
     id_report = models.AutoField(primary_key=True)
@@ -72,3 +78,7 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report for {self.id_election.type} election"
+
+    def save(self, *args, **kwargs):
+        self.csv_file.name = os.path.join('reports', f'report_{self.id_election.id_election}.csv')
+        super().save(*args, **kwargs)

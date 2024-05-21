@@ -91,32 +91,6 @@ def admin_elections(request):
     return render(request, 'admin_elections.html', context)
 
 
-def admin_eligible(request, election_id):
-    election = get_object_or_404(ElectionEvent, id_election=election_id)
-    all_users = User.objects.all()
-    eligible_voters = election.eligible_voters.all()
-    votes = Vote.objects.filter(id_election=election)
-
-    # Users who are not assigned to this election
-    not_assigned_users = all_users.exclude(id__in=eligible_voters.values_list('id', flat=True))
-
-    # Users who are assigned but have not voted
-    voted_user_ids = votes.values_list('user_id', flat=True)
-    not_voted_users = eligible_voters.exclude(id__in=voted_user_ids)
-
-    # Users who have voted
-    voted_users = User.objects.filter(id__in=voted_user_ids)
-
-    context = {
-        'election': election,
-        'not_assigned_users': not_assigned_users,
-        'not_voted_users': not_voted_users,
-        'voted_users': voted_users
-    }
-
-    return render(request, 'admin_eligible.html', context)
-
-
 def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -130,7 +104,7 @@ def signup(request):
             return redirect('home')
     else:
         form = SignUpForm()
-    return render(request, "accounts/signup.html", {'form': form})
+    return render(request, "registration/signup.html", {'form': form})
 
 
 def logout(request):
@@ -139,7 +113,7 @@ def logout(request):
 
 
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
+    template_name = 'registration/login.html'
     authentication_form = CustomAuthenticationForm
 
     def get_success_url(self):
@@ -151,13 +125,13 @@ class CustomPasswordResetView(PasswordResetView):
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'accounts/password_reset_done.html'
+    template_name = 'registration/password_reset_done.html'
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = CustomSetPasswordForm
-    template_name = 'accounts/password_reset_confirm.html'
+    template_name = 'registration/password_reset_confirm.html'
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'accounts/password_reset_complete.html'
+    template_name = 'registration/password_reset_complete.html'
