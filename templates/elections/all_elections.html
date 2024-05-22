@@ -42,7 +42,7 @@
     </div>
 
     <h2>Not Started Yet</h2>
-    <div class="list-group">
+    <div class="list-group mb-4">
         {% for election in no_started_elections %}
             <div class="list-group-item d-flex justify-content-between align-items-center border p-3 mb-2">
                 <div>
@@ -54,6 +54,23 @@
             </div>
         {% empty %}
             <div class="list-group-item">No elections available.</div>
+        {% endfor %}
+    </div>
+
+    <h2>Ended Elections</h2>
+    <div class="list-group">
+        {% for election in ended_elections %}
+            <div class="list-group-item d-flex justify-content-between align-items-center border p-3 mb-2">
+                <div>
+                    <h5 class="mb-1">{{ election.name }}</h5>
+                    <p class="mb-1">{{ election.type }} - {{ election.start_date|date:"Y-m-d" }} to {{ election.end_date|date:"Y-m-d" }}</p>
+                    <small>Number of candidates: {{ election.candidates.count }}</small><br>
+                    <small>Ended on: {{ election.end_date|date:"Y-m-d" }}</small>
+                </div>
+                <a href="{% url 'election_results' election.id %}" class="btn btn-info">Results</a>
+            </div>
+        {% empty %}
+            <div class="list-group-item">No ended elections available.</div>
         {% endfor %}
     </div>
 </div>

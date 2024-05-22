@@ -25,18 +25,16 @@ def all_elections(request):
     query = request.GET.get('q', '')
 
     # Filter elections
-    started_elections = ElectionEvent.objects.filter(start_date__lte=now)
+    started_elections = ElectionEvent.objects.filter(start_date__lte=now, end_date__gte=now)
     no_started_elections = ElectionEvent.objects.filter(start_date__gt=now)
+    ended_elections = ElectionEvent.objects.filter(end_date__lt=now)
 
     # If a search query is provided
     if query:
         # Filter elections by type
-        started_elections = started_elections.filter(
-            Q(type__icontains=query)
-        )
-        no_started_elections = no_started_elections.filter(
-            Q(type__icontains=query)
-        )
+        started_elections = started_elections.filter(Q(type__icontains=query))
+        no_started_elections = no_started_elections.filter(Q(type__icontains=query))
+        ended_elections = ended_elections.filter(Q(type__icontains=query))
 
     # Get votes for the current user
     user_votes = Vote.objects.filter(user=request.user)
@@ -47,6 +45,7 @@ def all_elections(request):
     return render(request, "elections/all_elections.html", {
         "started_elections": started_elections,
         "no_started_elections": no_started_elections,
+        "ended_elections": ended_elections,
         "query": query,
         "user_voted_elections": user_voted_elections
     })
@@ -73,6 +72,12 @@ def vote(request, election_id):
 
 def thank_you(request):
     return render(request, "elections/thank_you.html")
+
+
+def election_results(request, election_id):
+    election = get_object_or_404(ElectionEvent, pk=election_id)
+    candidates = Candidate.objects.filter(id_election=election_id).order_by('-votes')
+    return render(request, "elections/election_results.html", {"election": election, "candidates": candidates})
 
 
 def admin_elections(request):
