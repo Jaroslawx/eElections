@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Count
 import csv
 
 from .models import ElectionEvent, Candidate, Vote, Report
@@ -19,15 +19,14 @@ def home(request):
     return render(request, "home.html")
 
 
-@login_required
 def all_elections(request):
     now = timezone.now()
     query = request.GET.get('q', '')
 
-    # Filter elections
-    started_elections = ElectionEvent.objects.filter(start_date__lte=now, end_date__gte=now)
-    no_started_elections = ElectionEvent.objects.filter(start_date__gt=now)
-    ended_elections = ElectionEvent.objects.filter(end_date__lt=now)
+    # Filter and annotate elections with the number of candidates
+    started_elections = ElectionEvent.objects.filter(start_date__lte=now, end_date__gte=now).annotate(candidate_count=Count('candidate'))
+    no_started_elections = ElectionEvent.objects.filter(start_date__gt=now).annotate(candidate_count=Count('candidate'))
+    ended_elections = ElectionEvent.objects.filter(end_date__lt=now).annotate(candidate_count=Count('candidate'))
 
     # If a search query is provided
     if query:
@@ -36,11 +35,12 @@ def all_elections(request):
         no_started_elections = no_started_elections.filter(Q(type__icontains=query))
         ended_elections = ended_elections.filter(Q(type__icontains=query))
 
-    # Get votes for the current user
-    user_votes = Vote.objects.filter(user=request.user)
-
-    # Get IDs of elections user has voted in
-    user_voted_elections = user_votes.values_list('id_election', flat=True)
+    user_voted_elections = []
+    if request.user.is_authenticated:
+        # Get votes for the current user
+        user_votes = Vote.objects.filter(user=request.user)
+        # Get IDs of elections user has voted in
+        user_voted_elections = user_votes.values_list('id_election', flat=True)
 
     return render(request, "elections/all_elections.html", {
         "started_elections": started_elections,
@@ -77,7 +77,7 @@ def thank_you(request):
 def election_results(request, election_id):
     election = get_object_or_404(ElectionEvent, pk=election_id)
     candidates = Candidate.objects.filter(id_election=election_id).order_by('-votes')
-    return render(request, "elections/election_results.html", {"election": election, "candidates": candidates})
+    return render(request, "elections/results.html", {"election": election, "candidates": candidates})
 
 
 def admin_elections(request):
