@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Elections{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Admin Elections</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Election Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Candidates</th>
+                <th>Total Voters</th>
+                <th>Votes Cast</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in election_data %}
+                <tr>
+                    <td>{{ data.election.type }}</td>
+                    <td>{{ data.election.start_date }}</td>
+                    <td>{{ data.election.end_date }}</td>
+                    <td>{{ data.total_candidates }}</td>
+                    <td>{{ data.total_voters }}</td>
+                    <td>{{ data.votes_cast }}</td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="end_election" value="{{ data.election.id_election }}" class="btn btn-warning btn-sm">End Election Early</button>
+                        </form>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" name="generate_report" value="{{ data.election.id_election }}" class="btn btn-primary btn-sm">Generate Report</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
