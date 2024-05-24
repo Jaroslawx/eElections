@@ -12,6 +12,7 @@ urlpatterns = [
 
     path("accounts/signup/", signup, name="signup"),
     path("accounts/logout/", logout, name='logout'),
+    path('captcha/', include('captcha.urls')),
 
     path('accounts/login/', CustomLoginView.as_view(), name='login'),
     path("accounts/password_reset/", CustomPasswordResetView.as_view(), name='password_reset'),

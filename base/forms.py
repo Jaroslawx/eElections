@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from datetime import datetime, date
 
 from django import forms
@@ -40,6 +41,7 @@ class SignUpForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}),
         help_text='Required. Inform your password again.'
     )
+    captcha = CaptchaField()
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
