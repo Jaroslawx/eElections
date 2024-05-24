@@ -18,6 +18,7 @@ from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm
 
 
 def home(request):
+    # Render the home page
     return render(request, "home.html")
 
 
@@ -55,11 +56,12 @@ def all_elections(request):
 
 
 def vote(request, election_id):
+    # Handle POST requests
     if request.method == "POST":
         candidate_id = request.POST.get("candidate")
         candidate = Candidate.objects.get(pk=candidate_id)
-        candidate.votes += 1  # We increase the number of votes for the selected candidate
-        candidate.save()  # We save the changes in the database
+        candidate.votes += 1  # Increase the number of votes for the selected candidate
+        candidate.save()  # Save the changes in the database
 
         # Save that the user participated in this election
         user = request.user
@@ -74,10 +76,12 @@ def vote(request, election_id):
 
 
 def thank_you(request):
+    # Render the thank you page
     return render(request, "elections/thank_you.html")
 
 
 def election_results(request, election_id):
+    # Get the election and its candidates
     election = get_object_or_404(ElectionEvent, pk=election_id)
     candidates = Candidate.objects.filter(id_election=election_id).order_by('-votes')
     return render(request, "elections/results.html", {"election": election, "candidates": candidates})
@@ -89,6 +93,7 @@ def admin_elections(request):
     elections = ElectionEvent.objects.all()
     election_data = []
 
+    # Get data for each election
     for election in elections:
         total_voters = election.eligible_voters.count()
         votes_cast = Vote.objects.filter(id_election=election).count()
@@ -100,6 +105,7 @@ def admin_elections(request):
             'total_candidates': total_candidates
         })
 
+    # Handle POST requests
     if request.method == "POST":
         if 'end_election' in request.POST:
             election_id = request.POST['end_election']
@@ -111,6 +117,7 @@ def admin_elections(request):
             # Logic to generate report
             return generate_report(request, election_id)
 
+    # Render the page
     return render(request, "elections/admin_elections.html", {
         "election_data": election_data
     })
@@ -133,7 +140,7 @@ def signup(request):
 
 
 def logout(request):
-    auth_logout(request)
+    auth_logout(request)  # Logout the user
     return redirect('home')
 
 
@@ -200,7 +207,7 @@ def generate_report(request, election_id):
             writer.writerow([candidate, votes])
 
     # Save information about the report in the database
-    report_instance = Report.objects.create(id_election=election, csv_file=file_name, frequency=turnout_percentage)
+    Report.objects.create(id_election=election, csv_file=file_name, frequency=turnout_percentage)
 
     # Return the HTTP response with the CSV file
     with open(file_path, 'rb') as file:
@@ -208,4 +215,3 @@ def generate_report(request, election_id):
         response['Content-Disposition'] = f'attachment; filename="{file_name}"'
 
     return response
-
