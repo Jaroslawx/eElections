@@ -1,5 +1,6 @@
 import os
 import csv
+import logging
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -15,6 +16,9 @@ from .models import ElectionEvent, Candidate, Vote, Report
 from django.contrib.auth.views import (LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,
                                        PasswordResetCompleteView)
 from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def home(request):
@@ -70,6 +74,8 @@ def all_elections(request):
 
 
 def vote(request, election_id):
+    logger.info(f"User {request.user} accessed the vote page for election ID {election_id}.")
+
     # Handle POST requests
     if request.method == "POST":
         candidate_id = request.POST.get("candidate")
@@ -90,6 +96,7 @@ def vote(request, election_id):
 
 
 def thank_you(request):
+    logger.info(f"User {request.user} accessed the thank you page.")
     # Render the thank page
     return render(request, "elections/thank_you.html")
 
@@ -184,6 +191,8 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 
 
 def generate_report(request, election_id):
+    logger.info(f"User {request.user} initiated report generation for election ID {election_id}.")
+
     # Retrieve data needed for the report
     election = ElectionEvent.objects.get(id_election=election_id)
     total_voters = election.eligible_voters.count()

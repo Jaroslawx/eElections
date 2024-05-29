@@ -139,10 +139,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #             'formatter': 'verbose',
 #             'maxBytes': 1024 * 1024 * 5,  # 5 MB
 #             'backupCount': 3,
+#             'filters': ['require_debug_true'],  # Add filter
 #         },
 #         'console': {
 #             'class': 'logging.StreamHandler',
 #             'formatter': 'simple',
+#             'filters': ['require_debug_true'],  # Add filter
 #         },
 #     },
 #     'root': {
@@ -159,6 +161,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #             'handlers': ['file', 'console'],
 #             'level': 'DEBUG',
 #             'propagate': False,
+#         },
+#     },
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
 #         },
 #     },
 # }
