@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
-{% load static %}
+<!-- home.html -->
 
+{% extends 'base.html' %}
 {% block title %}Main Page{% endblock %}
 
 {% block content %}
 <div class="container">
     <h1>Welcome to the Main Page!</h1>
     <p>Here you can find information about our elections.</p>
-    <a href="/elections/all_elections/">Check all elections</a>
+    <a href="{% url 'all_elections' %}">Check all elections</a>
     <h2>About eElections Platform</h2>
     <p>eElections is an innovative platform aimed at facilitating the electoral process, allowing citizens easy access to information about upcoming elections and the ability to vote online.</p>
     <h2>Benefits for Users</h2>
@@ -23,4 +23,37 @@
     <h2>Need Help?</h2>
     <p>Contact us at <a href="mailto:info@eelections.com">info@eelections.com</a> if you have any questions or issues. We're here to help!</p>
 </div>
+
+<!-- Div to hold the calendar -->
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch data for upcoming elections
+        fetch("{% url 'upcoming_elections' %}")
+            .then(response => response.json())
+            .then(data => {
+                // Initialize FullCalendar
+                var calendarEl = document.getElementById('calendar');
+
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    events: data, // Pass fetched data as events to the calendar
+                    plugins: ['dayGrid'],
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                    },
+                    defaultView: 'dayGridMonth'
+                });
+
+                calendar.render();
+            })
+            .catch(error => {
+                console.error('Error fetching upcoming elections:', error);
+            });
+    });
+</script>
+
+
 {% endblock %}

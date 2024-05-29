@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -20,6 +20,20 @@ from .forms import SignUpForm, CustomAuthenticationForm, CustomPasswordResetForm
 def home(request):
     # Render the home page
     return render(request, "home.html")
+
+
+def upcoming_elections(request):
+    now = timezone.now()
+    elections = ElectionEvent.objects.filter(start_date__gte=now)
+    election_data = [
+        {
+            'title': election.type,
+            'start': election.start_date.strftime('%Y-%m-%dT%H:%M:%S'),
+            'end': election.end_date.strftime('%Y-%m-%dT%H:%M:%S'),
+        }
+        for election in elections
+    ]
+    return JsonResponse(election_data, safe=False)
 
 
 def all_elections(request):
@@ -76,7 +90,7 @@ def vote(request, election_id):
 
 
 def thank_you(request):
-    # Render the thank you page
+    # Render the thank page
     return render(request, "elections/thank_you.html")
 
 

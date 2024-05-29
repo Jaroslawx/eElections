@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}eELECTIONS{% endblock %}</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <title>{% block title %}{% endblock %}</title>
-    <!-- Here you can add other header elements, such as a link to CSS stylesheets or JavaScript scripts -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+    <!-- FullCalendar CSS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/core/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/daygrid/main.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/core/main.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/daygrid/main.min.css" rel="stylesheet" />
+    
+
     <style>
         body {
             background-color: #62aeff; /* Blue background */
