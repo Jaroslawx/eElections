@@ -73,24 +73,30 @@ def all_elections(request):
     })
 
 
+@login_required
 def vote(request, election_id):
     logger.info(f"User {request.user} accessed the vote page for election ID {election_id}.")
+
+    # Check if the user has already voted in this election
+    user = request.user
+    election = ElectionEvent.objects.get(pk=election_id)
+    if Vote.objects.filter(user=user, id_election=election).exists():
+        return redirect("thank_you")
 
     # Handle POST requests
     if request.method == "POST":
         candidate_id = request.POST.get("candidate")
-        candidate = Candidate.objects.get(pk=candidate_id)
-        candidate.votes += 1  # Increase the number of votes for the selected candidate
-        candidate.save()  # Save the changes in the database
 
-        # Save that the user participated in this election
-        user = request.user
-        election = ElectionEvent.objects.get(pk=election_id)
+        if candidate_id != "invalid":
+            candidate = Candidate.objects.get(pk=candidate_id)
+            candidate.votes += 1  # Add a vote to the candidate
+            candidate.save()  # Save changes to the database
+
+        # Save that the user has voted in this election
         Vote.objects.create(user=user, id_election=election)
 
-        return redirect("thank_you")  # Redirected to a thank_you page
+        return redirect("thank_you")  # Redirect to the thank you page
     else:
-        election = ElectionEvent.objects.get(pk=election_id)
         candidates = Candidate.objects.filter(id_election=election_id)
         return render(request, "elections/vote.html", {"election": election, "candidates": candidates})
 
