@@ -1,3 +1,4 @@
+<!-- results.html -->
 {% extends 'base.html' %}
 
 {% block title %}Election Results{% endblock %}
@@ -15,5 +16,64 @@
         {% endfor %}
     </ul>
     <a href="{% url 'all_elections' %}" class="btn btn-secondary mt-3">Back to All Elections</a>
+    
+    <!-- Add a section for the charts -->
+    <div class="mt-5">
+        <h2>Voter Turnout</h2>
+        <canvas id="voterTurnoutChart"></canvas>
+    </div>
+    <div class="mt-5">
+        <h2>Candidate Votes Percentage</h2>
+        <canvas id="candidateVotesChart"></canvas>
+    </div>
 </div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const voterTurnoutCtx = document.getElementById('voterTurnoutChart').getContext('2d');
+    const candidateVotesCtx = document.getElementById('candidateVotesChart').getContext('2d');
+    
+    const voterTurnoutData = {
+        labels: ['Voted', 'Did Not Vote'],
+        datasets: [{
+            data: [{{ voted_count }}, {{ not_voted_count }}],
+            backgroundColor: ['#36a2eb', '#ff6384'],
+        }]
+    };
+
+    // Calculate the total number of votes
+    const totalVotes = {% for candidate in candidates %}{{ candidate.votes }}{% if not forloop.last %} + {% endif %}{% endfor %};
+
+    const candidateVotesData = {
+        labels: [{% for candidate in candidates %}'{{ candidate.name }} {{ candidate.surname }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            data: [{% for candidate in candidates %}{{ candidate.votes }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: ['#36a2eb', '#ff6384', '#ff9f40', '#ffcd56', '#4bc0c0', '#9966ff', '#c9cbcf'],
+        }]
+    };
+
+    new Chart(voterTurnoutCtx, {
+        type: 'pie',
+        data: voterTurnoutData,
+    });
+    
+    new Chart(candidateVotesCtx, {
+        type: 'bar',
+        data: candidateVotesData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: totalVotes,
+                    ticks: {
+                        callback: function(value) {
+                            return value;  // Display raw vote counts
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

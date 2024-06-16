@@ -111,7 +111,21 @@ def election_results(request, election_id):
     # Get the election and its candidates
     election = get_object_or_404(ElectionEvent, pk=election_id)
     candidates = Candidate.objects.filter(id_election=election_id).order_by('-votes')
-    return render(request, "elections/results.html", {"election": election, "candidates": candidates})
+
+    # Calculate voter turnout
+    eligible_voters = election.eligible_voters.all()
+    total_eligible_voters = eligible_voters.count()
+    total_votes_cast = sum(candidate.votes for candidate in candidates)
+
+    voted_count = total_votes_cast  # Assuming one vote per voter for simplicity
+    not_voted_count = total_eligible_voters - voted_count
+
+    return render(request, "elections/results.html", {
+        "election": election,
+        "candidates": candidates,
+        "voted_count": voted_count,
+        "not_voted_count": not_voted_count,
+    })
 
 
 @login_required
