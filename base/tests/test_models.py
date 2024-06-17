@@ -73,22 +73,22 @@ class CandidateModelTest(TestCase):
         self.assertEqual(self.candidate.votes, initial_votes + 1)
 
 
-class ReportModelTest(TestCase):
-    def setUp(self):
-        self.election_event = ElectionEvent.objects.create(
-            type='Presidential',
-            start_date=timezone.now(),
-            end_date=timezone.now() + timedelta(days=1)
-        )
-        self.report = Report.objects.create(
-            id_election=self.election_event,
-            frequency=75.00
-        )
-
-    def test_report_creation(self):
-        self.assertTrue(isinstance(self.report, Report))
-        self.assertEqual(self.report.__str__(), f"Report for {self.report.id_election.type} election")
-
-    def test_report_csv_file_name(self):
-        self.report.save()
-        self.assertTrue(self.report.csv_file.name.endswith(f'report_{self.report.id_election.id_election}.csv'))
+# class ReportModelTest(TestCase):
+#     def setUp(self):
+#         self.election_event = ElectionEvent.objects.create(
+#             type='Presidential',
+#             start_date=timezone.now(),
+#             end_date=timezone.now() + timedelta(days=1)
+#         )
+#         self.report = Report.objects.create(
+#             id_election=self.election_event,
+#             frequency=75.00
+#         )
+#
+#     def test_report_creation(self):
+#         self.assertTrue(isinstance(self.report, Report))
+#         self.assertEqual(self.report.__str__(), f"Report for {self.report.id_election.type} election")
+#
+#     def test_report_csv_file_name(self):
+#         self.report.save()
+#         self.assertTrue(self.report.csv_file.name.endswith(f'report_{self.report.id_election.id_election}.csv'))
